@@ -5,8 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.a0b.move2dinerforuser.DTO.MenuListItem;
 import com.example.a0b.move2dinerforuser.R;
 
@@ -34,6 +36,7 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.MyView
         holder.tvRecycleFDName.setText(properties.get(position).getFoodName());
         holder.tvRecycleFDPrice.setText(String.valueOf(NumberFormat.getCurrencyInstance().format(properties.get(position).getFoodPrice())));
         holder.tvRecycleFDDescribe.setText(properties.get(position).getFoodDescribe());
+        Glide.with(context).load(properties.get(position).getFoodStoragePath()).placeholder(R.drawable.lunch_box).error(R.drawable.lunch_box).into(holder.ivFoodimg);
     }
 
     @Override
@@ -42,10 +45,12 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.MyView
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
+        ImageView ivFoodimg;
         TextView tvRecycleFDName, tvRecycleFDPrice, tvRecycleFDDescribe;
 
         public MyViewHolder(View itemView) {
             super(itemView);
+            ivFoodimg = (ImageView) itemView.findViewById(R.id.ivFoodimg);
             tvRecycleFDName = (TextView) itemView.findViewById(R.id.tvRecycleFDName);
             tvRecycleFDPrice = (TextView) itemView.findViewById(R.id.tvRecycleFDPrice);
             tvRecycleFDDescribe = (TextView) itemView.findViewById(R.id.tvRecycleFDDescribe);

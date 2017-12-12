@@ -85,7 +85,7 @@ public class ActivityTruckInfo extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_truck_info);
         if (primaryKey == null) { //카카오톡 링크를 타고 온경우
             primaryKey = getIntent().getExtras().get("PrimaryKey").toString();
             System.out.println("체크 : " + primaryKey);
@@ -96,11 +96,11 @@ public class ActivityTruckInfo extends AppCompatActivity {
             return;
         }
         primaryKey = getIntent().getStringExtra("PrimaryKey");
-        setContentView(R.layout.activity_truck_info);
 
-        initView();
 
         BaseApplication.getInstance().progressON(ActivityTruckInfo.this, "트럭 정보 로딩중");
+
+        initView();
 
         //메뉴정보 가져오기
         loadMenuInfo();
@@ -108,6 +108,19 @@ public class ActivityTruckInfo extends AppCompatActivity {
         //한 트럭에 대한 리뷰 리스트 가져오기
         loadReviewList();
 
+        checkOnBusiness();
+
+        connectEvent();
+
+        truckinfo_scrollview.post(new Runnable() {
+            public void run() {
+                truckinfo_scrollview.scrollTo(0, 0);
+            }
+        });
+
+    }
+
+    private void checkOnBusiness() {
         database.getReference().child("trucks").child("info").child(primaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -134,9 +147,6 @@ public class ActivityTruckInfo extends AppCompatActivity {
 
             }
         });
-
-
-        connectEvent();
 
     }
 
@@ -260,6 +270,7 @@ public class ActivityTruckInfo extends AppCompatActivity {
                 });
             }
         });
+
         tv_truck_writereview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -297,14 +308,8 @@ public class ActivityTruckInfo extends AppCompatActivity {
             }
         });
 
-        //리사이클러뷰쪽으로 스크롤이 내려감 -> 스크롤 위로 올리기위해서 이 코드 써줘야함
-        truckinfo_scrollview.post(new Runnable() {
-            public void run() {
-                truckinfo_scrollview.scrollTo(0, 0);
-            }
-        });
-    }
 
+    }
 
     private void settingData() {
 
@@ -347,7 +352,6 @@ public class ActivityTruckInfo extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-
     }
 
     private void loadImageSlide() {
@@ -388,7 +392,10 @@ public class ActivityTruckInfo extends AppCompatActivity {
                         page.setRotationY(position * 80);   //View의 Y축(세로축) 회전 각도
                     }
                 });
+
                 BaseApplication.getInstance().progressOFF();
+
+
             }
 
             @Override
@@ -425,6 +432,12 @@ public class ActivityTruckInfo extends AppCompatActivity {
                 }
 
                 reviewAdapter.notifyDataSetChanged();
+                //리사이클러뷰쪽으로 스크롤이 내려감 -> 스크롤 위로 올리기위해서 이 코드 써줘야함
+                truckinfo_scrollview.post(new Runnable() {
+                    public void run() {
+                        truckinfo_scrollview.scrollTo(0, 0);
+                    }
+                });
             }
 
             @Override
